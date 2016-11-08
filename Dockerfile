@@ -24,7 +24,8 @@ RUN \
 	    php7.0-opcache \
 	    php7.0-pdo \
 	    php7.0-xml \
-	    php7.0-phalcon
+	    php7.0-phalcon \
+        php7.0-zip
 
 RUN curl -sS https://getcomposer.org/installer | php
 RUN mv composer.phar /usr/local/bin/composer
@@ -50,6 +51,8 @@ COPY build/nginx.conf /etc/nginx/sites-enabled/default
 COPY build/php.ini /etc/php/7.0/fpm/php.ini
 
 ADD src /var/www/public/
+
+RUN composer install --no-ansi --no-dev --no-interaction --no-progress --no-scripts --optimize-autoloader --working-dir=/var/www/public/
 
 EXPOSE 80 443
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
